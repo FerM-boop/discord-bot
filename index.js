@@ -1,8 +1,10 @@
 // Require the necessary discord.js classes
-const { Client, Events, GatewayIntentBits, EmbedBuilder, PermissionsBitField, Permissions } = require('discord.js');
+const { Client, Events, GatewayIntentBits, EmbedBuilder, PermissionsBitField, Permissions, IntentsBitField } = require('discord.js');
 const { config } = require('dotenv');
+const { Configuration, OpenAIApi } = require('openai');
 
 const prefix = '>' ;
+const gptPrefix = '>>';
 
 config();
 
@@ -35,9 +37,42 @@ client.on('messageCreate', (message) => {
 
 	// COMMANDS
 
+	// Hello cmd
 	if (command === 'hello') {
 		message.channel.send(`Hello! ${message.author}`);
 	}
+});
+
+// GPT 3.5 Integration
+const configuration = new Configuration({
+	apiKey: process.env.OPENAI_TOKEN,
+});
+
+const openai = new OpenAIApi(configuration);
+
+client.on('messageCreate', async (message) => {
+	if (!message.content.startsWith(gptPrefix) || message.author.bot || message.content.startsWith('!')) return;
+
+	const prompt = message.content.slice(gptPrefix.length);
+
+	const conversationLog = [{
+		role: 'system',
+		content: 'You are a friendly chatbot.',
+	}];
+
+	conversationLog.push({
+		role: 'user',
+		content: prompt,
+	});
+
+	await message.channel.sendTyping();
+
+	const result = await openai.createChatCompletion({
+		model: 'gpt-3.5-turbo',
+		messages: conversationLog,
+	});
+
+	message.reply(result.data.choices[0].message.content);
 });
 
 client.login(process.env.TOKEN);
