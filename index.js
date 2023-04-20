@@ -1,8 +1,20 @@
 // Require the necessary discord.js classes
-const { Client, Events, GatewayIntentBits, EmbedBuilder, PermissionsBitField, Permissions, IntentsBitField } = require('discord.js');
-const { config } = require('dotenv');
-const { Configuration, OpenAIApi } = require('openai');
 
+// reading msgs and music
+const { Client, Events, GatewayIntentBits, EmbedBuilder, PermissionsBitField, Permissions, IntentsBitField, Collection, Intents } = require('discord.js');
+// env var
+const { config } = require('dotenv');
+// openai
+const { Configuration, OpenAIApi } = require('openai');
+// music
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+const { Player } = require('discord-player');
+
+const fs = require('node:fs');
+const path = require('node:path');
+
+// Different prefixes for different types of commands
 const prefix = '>' ;
 const gptPrefix = '>>';
 
@@ -14,6 +26,7 @@ const client = new Client({
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
+		Intents.FLAGS.GUILD_VOICE_STATES,
 	],
 });
 
@@ -44,17 +57,20 @@ client.on('messageCreate', (message) => {
 });
 
 // GPT 3.5 Integration
+
+// giving it the key
 const configuration = new Configuration({
 	apiKey: process.env.OPENAI_TOKEN,
 });
 
+// initializing openai instance
 const openai = new OpenAIApi(configuration);
 
 client.on('messageCreate', async (message) => {
 	if (!message.content.startsWith(gptPrefix) || message.author.bot || message.content.startsWith('!')) return;
 
 	const prompt = message.content.slice(gptPrefix.length);
-
+	// starting state for the bot
 	const conversationLog = [{
 		role: 'system',
 		content: 'You are a friendly chatbot.',
@@ -64,15 +80,18 @@ client.on('messageCreate', async (message) => {
 		role: 'user',
 		content: prompt,
 	});
-
+	// makes bot appear as typing in discord
 	await message.channel.sendTyping();
 
+	// request made to openai selecting model and giving it context
 	const result = await openai.createChatCompletion({
 		model: 'gpt-3.5-turbo',
 		messages: conversationLog,
 	});
 
+	// respond to cmd message with the first answer
 	message.reply(result.data.choices[0].message.content);
 });
 
+// giving the client the discord token
 client.login(process.env.TOKEN);
