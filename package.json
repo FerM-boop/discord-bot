@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,13 +12,19 @@
   "license": "ISC",
   "dependencies": {
     "@discordjs/builders": "^1.6.1",
+    "@discordjs/opus": "^0.9.0",
     "@discordjs/rest": "^1.7.0",
     "@discordjs/voice": "^0.16.0",
+    "@mapbox/node-pre-gyp": "^1.0.10",
     "discord-api-types": "^0.37.39",
     "discord-player": "^6.2.1",
     "discord.js": "^14.9.0",
     "dotenv": "^16.0.3",
-    "openai": "^3.2.1"
+    "node-addon-api": "^6.1.0",
+    "node-gyp": "^7.1.2",
+    "node-pre-gyp": "^0.17.0",
+    "openai": "^3.2.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "eslint": "^8.35.0"
