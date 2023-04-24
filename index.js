@@ -94,6 +94,7 @@ client.on('messageCreate', async (message) => {
 	}
 	catch (err) {
 		console.error(`ERROR: ${err}`);
+		message.reply('There was an error with your request, please try again.');
 	}
 });
 
