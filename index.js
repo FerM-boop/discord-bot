@@ -26,7 +26,7 @@ const client = new Client({
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
-		Intents.FLAGS.GUILD_VOICE_STATES,
+		GatewayIntentBits.GuildVoiceStates,
 	],
 });
 
@@ -84,13 +84,17 @@ client.on('messageCreate', async (message) => {
 	await message.channel.sendTyping();
 
 	// request made to openai selecting model and giving it context
-	const result = await openai.createChatCompletion({
-		model: 'gpt-3.5-turbo',
-		messages: conversationLog,
-	});
-
-	// respond to cmd message with the first answer
-	message.reply(result.data.choices[0].message.content);
+	try {
+		const result = await openai.createChatCompletion({
+			model: 'gpt-3.5-turbo',
+			messages: conversationLog,
+		});
+		// respond to cmd message with the first answer
+		message.reply(result.data.choices[0].message.content);
+	}
+	catch (err) {
+		console.error(`ERROR: ${err}`);
+	}
 });
 
 // giving the client the discord token
