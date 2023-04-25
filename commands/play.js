@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { QueryType } = require('discord-player');
+const { QueryType, useQueue } = require('discord-player');
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
@@ -39,9 +39,13 @@ module.exports = {
 			return;
 		}
 
-		interaction.deferReply();
+		let queue = useQueue(interaction.guild.id);
 
-		const queue = await client.player.nodes.create(interaction.guild);
+		await interaction.deferReply();
+
+		if (!queue) {
+			queue = await client.player.nodes.create(interaction.guild);
+		}
 
 		if (!queue.connection) await queue.connect(interaction.member.voice.channel);
 
@@ -60,7 +64,7 @@ module.exports = {
 			}
 
 			const song = result.tracks[0];
-			await queue.addTrack(song);
+			queue.insertTrack(song);
 
 			embed
 				.setDescription(`Added **[${song.title}](${song.url})** to the queue.`)
@@ -81,7 +85,7 @@ module.exports = {
 			}
 
 			const playlist = result.playlist;
-			await queue.addTrack(playlist);
+			queue.insertTrack(playlist);
 
 			embed
 				.setDescription(`Added **[${playlist.title}](${playlist.url})** to the queue.`)
@@ -102,14 +106,16 @@ module.exports = {
 			}
 
 			const song = result.tracks[0];
-			await queue.addTrack(song);
+			queue.insertTrack(song);
 
 			embed
 				.setDescription(`Added **[${song.title}](${song.url})** to the queue.`)
 				.setThumbnail(song.thumbnail)
 				.setFooter({ text: `Duration: ${song.duration}` });
 		}
-		if (!queue.playing) await queue.node.play();
+		if (!queue.isPlaying()) {
+			await queue.node.play();
+		}
 
 		await interaction.editReply({ embeds: [embed] });
 	},
