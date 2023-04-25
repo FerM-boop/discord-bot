@@ -39,6 +39,8 @@ module.exports = {
 			return;
 		}
 
+		interaction.deferReply();
+
 		const queue = await client.player.nodes.create(interaction.guild);
 
 		if (!queue.connection) await queue.connect(interaction.member.voice.channel);
@@ -109,6 +111,6 @@ module.exports = {
 		}
 		if (!queue.playing) await queue.node.play();
 
-		await interaction.reply({ embeds: [embed] });
+		await interaction.editReply({ embeds: [embed] });
 	},
 };
