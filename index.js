@@ -4,6 +4,7 @@
 const { Client, Events, GatewayIntentBits, EmbedBuilder, PermissionsBitField, Permissions, IntentsBitField, Collection, Intents } = require('discord.js');
 // env var
 const { config } = require('dotenv');
+config();
 // openai
 const { Configuration, OpenAIApi } = require('openai');
 // music
@@ -18,8 +19,6 @@ const path = require('node:path');
 const prefix = '>' ;
 const gptPrefix = '>>';
 
-config();
-
 // Create a new client instance
 const client = new Client({
 	intents: [
@@ -30,10 +29,62 @@ const client = new Client({
 	],
 });
 
-client.on('ready', () => {
-	console.log('Bot is online!');
+// List of all commands
+const commands = [];
+client.commands = new Collection();
+// Pulls commands from each file
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+// Stores commands
+for (const file of commandFiles) {
+	const filePath = path.join(commandsPath, file);
+	const command = require(filePath);
 
+	client.commands.set(command.data.name, command);
+	commands.push(command.data.toJSON());
+}
+
+// Player
+client.player = new Player(client, {
+	ytdlOptions: {
+		quality: 'highestaudio',
+		highWaterMark: 1 << 25,
+	},
+});
+
+// Loading the commands to each server channel everytime the bot runs
+client.on('ready', async () => {
+	const guild_ids = client.guilds.cache.map(guild => guild.id);
+
+	const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
+	for (const guildId of guild_ids) {
+		try {
+			await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, guildId), { body: commands });
+			console.log('Successfully updated commands for guild ' + guildId);
+		}
+		catch (err) {
+			console.error(err);
+		}
+	}
+	console.log('Bot is online!');
 	client.user.setActivity('Go outside lol', { type: 'WATCHING' });
+});
+
+// Autofill when typing '/command' in discord
+client.on('interactionCreate', async interaction => {
+	if (!interaction.isCommand()) return;
+	// Gets command sent by the user
+	const command = client.commands.get(interaction.commandName);
+
+	if (!command) return;
+	// Executes command
+	try {
+		await command.execute({ client, interaction });
+	}
+	catch (err) {
+		console.error(err);
+		await interaction.reply({ content: `There was an error executing this command ${err}` });
+	}
 });
 
 client.on('messageCreate', (message) => {
