@@ -5,7 +5,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('pause')
-		.setDescription('Pauses the queue'),
+		.setDescription('Toggles pause/play  on the queue'),
 	execute: async ({ interaction }) => {
 		if (!interaction.member.voice.channel) {
 			await interaction.reply('You must be in a voice channel to use this command.');
