@@ -1,6 +1,6 @@
 {
   "name": "discord-bot",
-  "version": "1.0.0",
+  "version": "0.2.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,8 @@
     "node-gyp": "^7.1.2",
     "node-pre-gyp": "^0.17.0",
     "openai": "^3.2.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "ytdl-core": "^4.11.4"
   },
   "devDependencies": {
     "eslint": "^8.35.0"
