@@ -1,7 +1,7 @@
 // Require the necessary discord.js classes
 
 // reading msgs and music
-const { Client, Events, GatewayIntentBits, EmbedBuilder, PermissionsBitField, Permissions, IntentsBitField, Collection, Intents } = require('discord.js');
+const { Client, GatewayIntentBits, Collection } = require('discord.js');
 // env var
 const { config } = require('dotenv');
 config();
@@ -16,7 +16,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 // Different prefixes for different types of commands
-const prefix = '>' ;
 const gptPrefix = '>>';
 
 // Create a new client instance
@@ -84,26 +83,6 @@ client.on('interactionCreate', async interaction => {
 	catch (err) {
 		console.error(err);
 		await interaction.reply({ content: `There was an error executing this command ${err}` });
-	}
-});
-
-client.on('messageCreate', (message) => {
-	if (!message.content.startsWith(prefix) || message.author.bot) return;
-
-	const args = message.content.slice(prefix.length).split(/ +/);
-	const command = args.shift().toLowerCase();
-
-	// message array
-
-	const messageArray = message.content.split(' ');
-	const argument = messageArray.slice(1);
-	const cmd = messageArray[0];
-
-	// COMMANDS
-
-	// Hello cmd
-	if (command === 'hello') {
-		message.channel.send(`Hello! ${message.author}`);
 	}
 });
 
