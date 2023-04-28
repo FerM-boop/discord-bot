@@ -11,6 +11,8 @@ const { Configuration, OpenAIApi } = require('openai');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { Player } = require('discord-player');
+// last.fm
+const LastFmNode = require('lastfm').LastFmNode;
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -18,7 +20,7 @@ const path = require('node:path');
 // Different prefixes for different types of commands
 const gptPrefix = '>>';
 
-// Create a new client instance
+// Create bot client
 const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
@@ -49,6 +51,12 @@ client.player = new Player(client, {
 		quality: 'highestaudio',
 		highWaterMark: 1 << 25,
 	},
+});
+
+// LastFM
+client.lastFM = new LastFmNode({
+	api_key: process.env.LASTFM_KEY,
+	secret: process.env.LASTFM_SECRET,
 });
 
 // Loading the commands to each server channel everytime the bot runs
