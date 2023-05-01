@@ -10,6 +10,7 @@ Second **Pre-release** of the bot with _GPT3.5-turbo_ and _Music_ integration.
     - Queue
     - Skip
     - Stop
+    - :sparkles: NEW :sparkles: Joint Playlist (Creates a playlist with the top tracks of each user, you can set time span for top tracks data and tracks per user.)
     
 - :x: Still missing error catchers
 
