@@ -26,7 +26,7 @@ GPT 3.5 Turbo:
 Music commands screenshot:  
 ![Music commands screenshot](./assets/musicScreenshot_0_2_0.PNG)
 
-Joint playlist command:  
+Joint playlist command: (Creates a playlist with the top tracks of each user)  
 ![Joint playlist commans screenshot](./assets/jointPlaylistScreenshot_0_2_2.png)
 
 
