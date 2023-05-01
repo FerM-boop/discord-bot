@@ -20,11 +20,13 @@ Second **Pre-release** of the bot with _GPT3.5-turbo_ and _Music_ integration.
     - Music analysis and more integrations with last.fm api
 
 ## Preview
-GPT 3.5 Turbo:
+GPT 3.5 Turbo:  
 ![GPT 3.5 Turbo integration gif](./assets/gpt3_5_turbo_0_2_0.gif)
 
-Music commands screenshot:
+Music commands screenshot:  
 ![Music commands screenshot](./assets/musicScreenshot_0_2_0.PNG)
 
+Joint playlist command:  
+![Joint playlist commans screenshot](./assets/jointPlaylistScreenshot_0_2_2.png)
 
 
